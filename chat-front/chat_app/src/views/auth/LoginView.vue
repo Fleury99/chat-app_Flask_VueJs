@@ -1,39 +1,50 @@
-<script lang="ts">
+<script  lang="ts">
+import { api } from '@/api_env/api';
+import { User } from '@/model/user';
+import { AuthService } from '@/services/auth_service';
+import { ToastService } from '@/services/toast_service';
 import axios from 'axios';
-import Swal from 'sweetalert2';
 
-export default{
-     data(){
-          return  {
-//model
-            login:{
-                    username_or_email:"",
-                    password:""
-               },
-          }
-     },
-     name: "LoginComponent",
-     methods:{
-          // login for user
-          loginUser(){
-               axios.post("http://127.0.0.1:5000/auth/login",this.loginUser)
-               .then(response=>{
-                    console.log("response",response.data);
-                    this.login={
-                        username_or_email:"",
-                        password:""
-                    }
-                    Swal.fire({
-                         text: "Sucess login",
-                         icon: "success"
-                         });
-                    this.loginUser();
+
+ export default{
+    data(){
+        return{
+            user: new User(),
+            notif: new ToastService(),
+            auth_service:new AuthService(),
+
+        }
+    },
+    methods:{
+        login(){
+            console.log(this.user);
+            axios.post(api.url+"auth/login",this.user).then(response=>{
+                 if(response.data){
+                    console.log(response.data)
+                    this.auth_service.setToken(response.data.access_token);
+                    this.auth_service.setUserInfo(response.data.user);
+                    // redirection to main 
+                    this.$router.push('/main');
+
+                 }
+                   
+                   
                     
-               }).catch((error)=>{console.log(error)})
-
-          },
+               }).catch((error)=>{
+                this.notif.toast('error','une erreure est survenue');
+                console.log(error)}
+            )
         },
-    };
+
+        
+
+    },mounted() {
+        
+        
+        
+    },}
+ 
+
 </script>
 
 
@@ -45,8 +56,8 @@ export default{
                     <div class="col-xl-3 col-lg-4">
                         <div class="p-4 pb-0 p-lg-5 pb-lg-0 auth-logo-section">
                             <div class="text-white-50">
-                                <h3><a href="index.html" class="text-white"><i class="bx bxs-message-alt-detail align-middle text-white h3 mb-1 me-2"></i> Doot</a></h3>
-                                <p class="font-size-16">Responsive Bootstrap 5 Chat App</p>
+                                <h3><a href="index.html" class="text-white"><i class="bx bxs-message-alt-detail align-middle text-white h3 mb-1 me-2"></i> MailChatter</a></h3>
+                                <p class="font-size-16">By Kingvlad & God Mc</p>
                             </div>
                             <div class="mt-auto">
                                 <img src="@/assets/images/auth-img.png" alt="" class="auth-img">
@@ -64,21 +75,26 @@ export default{
                                             
                                             <div class="text-center mb-5">
                                                 <h3>Welcome Back !</h3>
-                                                <p class="text-muted">Sign in to continue to Doot.</p>
+                                                <p class="text-muted">Sign in to continue to MailChatter.</p>
                                             </div>
-                                            <form action="https://themesbrand.com/doot/layouts/index.html">
+                                            <form @submit.prevent="login">
                                                 <div class="mb-3">
-                                                    <label for="username" class="form-label">Username</label>
-                                                    <input type="text" class="form-control" id="username" placeholder="Enter username" v-model="login.username_or_email">
+                                                    <label for="tel" class="form-label">Email/Username</label>
+                                                    <input type="text" class="form-control" id="tel" placeholder="email or usernmae"  v-model="user.username_or_email" required>
+                                                    <div class="invalid-feedback">
+                                                        Please Enter email or usename
+                                                    </div>  
                                                 </div>
+                                                
+                                                
                                                 
                                                 <div class="mb-3">
                                                     <div class="float-end">
-                                                        <a href="auth-recoverpw.html" class="text-muted">Forgot password?</a>
+                                                        <a role="button" class="text-muted">Forgot password?</a>
                                                     </div>
                                                     <label for="userpassword" class="form-label">Password</label>
                                                     <div class="position-relative auth-pass-inputgroup mb-3">
-                                                        <input type="password" class="form-control pe-5" placeholder="Enter Password" id="password-input" v-model="login.password">
+                                                        <input type="password" class="form-control pe-5" placeholder="Enter Password" v-model="user.password" id="password-input">
                                                         <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
                                                     </div>
                                                 </div>
@@ -91,8 +107,8 @@ export default{
                                                 </div>
             
                                                 <div class="text-center mt-4">
-                                                    <a class="btn btn-primary w-100"> <router-link to="/main">Log In</router-link></a>
-                                                    <button class="btn btn-primary w-100" type="submit">Log In</button>
+                                                    
+                                                    <button class="btn btn-primary w-100" type="submit">LogIn</button>
                                                 </div>
                                                 <div class="mt-4 text-center">
                                                     <div class="signin-other-title">

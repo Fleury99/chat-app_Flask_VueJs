@@ -1,44 +1,43 @@
-<script lang="ts">
+<script  lang="ts">
+
+import { api } from '@/api_env/api';
+import { User } from '@/model/user';
+import { ToastService } from '@/services/toast_service';
 import axios from 'axios';
-//import type { register } from 'module';
-import Swal from 'sweetalert2';
 
-export default{
-     data(){
-          return  {
-//model
-            register:{
-                    username:"",
-                    email:"",
-                    phone_number:"",
-                    password:""
-               },
-          }
-     },
-     name: "RegisterComponent",
-     methods:{
-          // Reister for user
-          registerUser(){
-               axios.post("http://127.0.0.1:5000/auth/register",this.registerUser)
-               .then(response=>{
+
+
+ export default{
+    data(){
+        return{
+            user: new User(),
+            notif: new ToastService(),
+
+        }
+    },
+    methods:{
+        register(){
+            console.log(this.user);
+            axios.post(api.url+"auth/register",this.user).then(response=>{
                     console.log("response",response.data);
-                    this.register={
-                        username:"",
-                        email:"",
-                        phone_number:"",
-                        password:""
-                    }
-                    Swal.fire({
-                         text: "Sucess register",
-                         icon: "success"
-                         });
-                    this.registerUser();
+                    this.notif.toast('success','votre compte est créer ; vous pouvez vous connecté');
                     
-               }).catch((error)=>{console.log(error)})
-
-          },
+               }).catch((error)=>{
+                this.notif.toast('error','une erreure est survenue');
+                console.log(error)}
+            
+            )
         },
-    };
+
+        
+
+    },mounted() {
+        
+        
+        
+    },}
+ 
+
 </script>
 
 <template>
@@ -48,8 +47,8 @@ export default{
                     <div class="col-xl-3 col-lg-4">
                         <div class="p-4 pb-0 p-lg-5 pb-lg-0 auth-logo-section">
                             <div class="text-white-50">
-                                <h3><a href="index.html" class="text-white"><i class="bx bxs-message-alt-detail align-middle text-white h3 mb-1 me-2"></i> Doot</a></h3>
-                                <p class="font-size-16">Responsive Bootstrap 5 Chat App</p>
+                                <h3><a href="index.html" class="text-white"><i class="bx bxs-message-alt-detail align-middle text-white h3 mb-1 me-2"></i> MailChatter</a></h3>
+                                <p class="font-size-16">By Kingvlad & God Mc</p>
                             </div>
                             <div class="mt-auto">
                                 <img src="@/assets/images/auth-img.png" alt="" class="auth-img">
@@ -67,27 +66,34 @@ export default{
                                             
                                             <div class="text-center mb-5">
                                                 <h3>Register Account</h3>
-                                                <p class="text-muted">Get your free Doot account now.</p>
+                                                <p class="text-muted">Get your free MailChatter account now.</p>
                                             </div>
-                                            <form class="needs-validation" novalidate action="https://themesbrand.com/doot/layouts/index.html">
+                                            <form class="needs-validation" novalidate  @submit.prevent="register">
                                                 <div class="mb-3">
                                                     <label for="useremail" class="form-label">Email</label>
-                                                    <input type="email" class="form-control" id="useremail" placeholder="Enter email" required v-model="register.email">  
+                                                    <input type="email" class="form-control" id="useremail" placeholder="Enter email"  v-model="user.email"  required>  
                                                     <div class="invalid-feedback">
                                                         Please Enter Email
                                                     </div>      
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="username" class="form-label">Username</label>
-                                                    <input type="text" class="form-control" id="username" placeholder="Enter username" required v-model="register.username">
+                                                    <input type="text" class="form-control" id="username" placeholder="Enter username"  v-model="user.username" required>
                                                     <div class="invalid-feedback">
                                                         Please Enter Username
+                                                    </div>  
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="tel" class="form-label">Telephone</label>
+                                                    <input type="text" class="form-control" id="tel" placeholder="(eg:+228XXXX)"  v-model="user.phone_number" required>
+                                                    <div class="invalid-feedback">
+                                                        Please Enter your phone number
                                                     </div>  
                                                 </div>
                                                 
                                                 <div class="mb-3">
                                                     <label for="userpassword" class="form-label">Password</label>
-                                                    <input type="password" class="form-control" id="userpassword" placeholder="Enter password" required v-model="register.password">
+                                                    <input type="password" class="form-control" id="userpassword" placeholder="Enter password"  v-model="user.password" required>
                                                     <div class="invalid-feedback">
                                                         Please Enter Password
                                                     </div>       
@@ -120,7 +126,7 @@ export default{
                                             </form><!-- end form -->
             
                                             <div class="mt-5 text-center text-muted">
-                                                <p>Already have an account ? <a href="auth-login.html" class="fw-medium text-decoration-underline">Login</a></p>
+                                                <p>Already have an account ? <a role="button" class="fw-medium text-decoration-underline"><router-link to="/login">Login</router-link></a></p>
                                             </div>
                                         </div>
                                     </div><!-- end col -->

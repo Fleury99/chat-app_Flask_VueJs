@@ -10,10 +10,14 @@ class User(db.Model):
     phone_number = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(256), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
+    img = db.Column(db.String(256), nullable=True)
     
     #list od reciev and send messages
     sent_messages = db.relationship('Message', foreign_keys='Message.sender_id', backref='sender', lazy=True)
     received_messages = db.relationship('Message', foreign_keys='Message.receiver_id', backref='receiver', lazy=True)
+    
+    #list of Postes 
+    users_postes = db.relationship('Poste', foreign_keys='Poste.sender_id', backref='sender', lazy=True)
 
 
     contacts = db.relationship('User', secondary='contacte', 

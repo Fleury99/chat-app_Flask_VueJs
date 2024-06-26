@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\GIANNIS\Documents\MY-FLASK-PROJECTS\Flask Project\chat_app-main\chat_app-main\chat-back\.env
+set VIRTUAL_ENV=D:\COURS_L3\SEM6\framework\projet final\code\chat-back\.env
 
 if not defined PROMPT set PROMPT=$P$G
 
